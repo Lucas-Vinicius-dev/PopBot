@@ -16,16 +16,13 @@ const client = new Client({
 client.on("interactionCreate", (interaction) => {
   if (!interaction.isChatInputCommand()) return;
 
-  if (interaction.commandName === 'ping') {
-    interaction.reply('pong');
-  }
-})
-
-client.on("interactionCreate", (interaction) => {
-  if (!interaction.isChatInputCommand()) return;
-
-  if (interaction.commandName === 'snake') {
-    const desenhoFora = 
+  switch (interaction.commandName) {
+    case 'ping': {
+      interaction.reply('pong');
+      break;
+    }
+    case 'snake': {
+      const desenhoFora = 
 `
 \`\`\`text
            ______________________
@@ -36,7 +33,11 @@ client.on("interactionCreate", (interaction) => {
   \\___________/______________\\___________/
 \`\`\``;
 
-    interaction.reply(desenhoFora);
+      interaction.reply(desenhoFora);
+      break;
+    }
+    default:
+      break;
   }
 })
 
