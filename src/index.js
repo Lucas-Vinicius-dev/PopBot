@@ -1,6 +1,5 @@
 import { Client, GatewayIntentBits } from "discord.js"
 import * as dotenv from "dotenv"
-import { commands } from "./commands.js"
 
 dotenv.config()
 
