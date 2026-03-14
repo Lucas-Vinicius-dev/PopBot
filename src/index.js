@@ -17,29 +17,27 @@ const client = new Client({
 client.on("interactionCreate", (interaction) => {
   if (!interaction.isChatInputCommand()) return;
 
-  if (interaction.commandName === 'ping') {
-    interaction.reply('pong');
-  }
-})
-
-client.on("interactionCreate", (interaction) => {
-  if (!interaction.isChatInputCommand()) return;
-
-  if (interaction.commandName === 'snake') {
-    const desenhoFora = 
+  switch (interaction.commandName) {
+    case 'ping':
+      interaction.reply('pong');
+      break;
+    case 'snake':
+      const desenhoFora = 
 `
 \`\`\`text
-           ______________________
-          /                      \\
-         /        ________        \\
-  ______/        /        \\        \\______
- (             /            \\             )
+            ______________________
+           /                      \\
+          /        ________        \\
+   ______/        /        \\        \\______
+  (             /            \\             )
   \\___________/______________\\___________/
 \`\`\``;
 
     interaction.reply(desenhoFora);
+    break;
   }
-})
+  }
+)
 
 client.on('ready', (client) => {
   console.log(`${client.user.tag} está online!`)
