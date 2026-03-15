@@ -15,7 +15,7 @@ export default {
 
     try {
       const user = await CodeforcesService.getUser(handle);
-      const color = RANK_COLORS[user.rank?.split(' ').pop()] ?? 0x7289da;
+      const color = 0x7289da;
 
       const embed = new EmbedBuilder()
         .setColor(color)

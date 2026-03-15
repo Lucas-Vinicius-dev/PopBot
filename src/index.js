@@ -1,17 +1,9 @@
-import 'dotenv/config';
+import { client } from './config.js';
 import { CodeforcesService } from './services/codeforces-services.js';
 
 const discord = await import('discord.js');
-const { Client, Intents, MessageEmbed } = discord;
-// bot client permissions
-const client = new Client({
-  intents: [
-    Intents.FLAGS.GUILDS,
-    Intents.FLAGS.GUILD_MESSAGES,
-    Intents.FLAGS.MESSAGE_CONTENT,
-    Intents.FLAGS.GUILD_MEMBERS
-  ]
-})
+const { MessageEmbed } = discord;
+
 // slash commands
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isCommand()) return;

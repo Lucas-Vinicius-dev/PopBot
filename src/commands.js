@@ -1,5 +1,5 @@
-const { SlashCommandBuilder } = discord;
 const discord = await import('discord.js');
+const { SlashCommandBuilder } = discord;
 
 export const commands = [
   {
@@ -20,7 +20,7 @@ export const commands = [
         type: 1,
         options: [
           {
-            name: 'nome',
+            name: 'handle',
             description: 'Nome do usuário (ex: LucasD+)',
             type: 3,
             required: true
