@@ -7,10 +7,6 @@ export const commands = [
     description: 'Responde com Pong!'
   },
   {
-    name: 'snake',
-    description: 'Uma pequena referência...'
-  },
-  {
     name: 'codeforce',
     description: 'Comandos do Codeforces',
     options: [

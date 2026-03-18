@@ -12,19 +12,6 @@ client.on("interactionCreate", async (interaction) => {
     case 'ping':
       await interaction.reply('Pong! 🏓');
       break;
-    case 'snake': {
-      const desenho =
-`\`\`\`text
-            ______________________
-           /                      \\
-          /        ________        \\
-   ______/        /        \\        \\______
-  (             /            \\             )
-  \\___________/______________\\___________/
-\`\`\``;
-      await interaction.reply(desenho);
-      break;
-    }
     case 'codeforce': {
       const sub = interaction.options.getSubcommand(); // subcommands selection
 
