@@ -1,6 +1,7 @@
-import { Client, GatewayIntentBits } from "discord.js"
+import Discord from "discord.js";
+const { Client, Intents, MessageEmbed } = Discord;
 import * as dotenv from "dotenv"
-import fs from "fs" // File System for saving data on cache
+import fs from "fs"
 import { stringify } from "querystring"
 
 dotenv.config();
@@ -21,7 +22,7 @@ let commands = [
 async function requestAPIProblems() {
   try {
       const response = await fetch("https://codeforces.com/api/problemset.problems");
-      const data = await response.json();
+      const data = await response.json(); 
 
       if (data.status === "OK") {
         return data.result.problems;
@@ -39,6 +40,9 @@ async function loadAPIData() {
     } else {
       const problems = await requestAPIProblems();
       if (problems != undefined) {
+        if (!fs.existsSync('data')) {
+          fs.mkdirSync('data', { recursive: true });
+        }
         fs.writeFileSync(CACHELOC, JSON.stringify(problems, null, 2));
         globalThis.PROBLEMS = problems;
       }
@@ -50,6 +54,9 @@ async function loadUserData() {
   if (fs.existsSync(USERSLOC)) {
     globalThis.USERDATA = JSON.parse(fs.readFileSync(USERSLOC, 'utf-8'));
   } else {
+    if (!fs.existsSync('data')) {
+      fs.mkdirSync('data', { recursive: true });
+    }
     globalThis.USERDATA = [];
     fs.writeFileSync(USERSLOC, JSON.stringify(globalThis.USERDATA, null, 2));
   }
@@ -64,12 +71,61 @@ async function findUser(username) {
   }
 }
 
+function createProblemEmbed(problem) {
+  const problemLink = LINKMODEL + PROBLEMSET + problem.contestId + "/" + problem.index;
+  
+  const embed = new MessageEmbed()
+    .setColor('#0099ff')
+    .setTitle(`Problema ${problem.index} - ${problem.name}`)
+    .setURL(problemLink)
+    .setDescription(`**Informações do Problema**`)
+    .addFields(
+      {
+        name: '📋 ID do Concurso',
+        value: `${problem.contestId}`,
+        inline: true
+      },
+      {
+        name: '🔤 Índice',
+        value: `${problem.index}`,
+        inline: true
+      },
+      {
+        name: '⭐ Pontos',
+        value: `${problem.points || 'N/A'}`,
+        inline: true
+      },
+      {
+        name: '📊 Dificuldade (Rating)',
+        value: `${problem.rating || 'N/A'}`,
+        inline: true
+      },
+      {
+        name: '🏷️ Tags',
+        value: problem.tags.length > 0 ? problem.tags.join(', ') : 'Sem tags',
+        inline: false
+      },
+      {
+        name: '🔗 Link',
+        value: `[Abrir no Codeforces](${problemLink})`,
+        inline: false
+      }
+    )
+    .setFooter({ 
+      text: 'Codeforces Bot',
+      iconURL: 'https://codeforces.com/favicon.ico'
+    })
+    .setTimestamp();
+  
+  return embed;
+}
+
 const client = new Client({
   intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildMembers
+    Intents.FLAGS.GUILDS,
+    Intents.FLAGS.GUILD_MESSAGES,
+    Intents.FLAGS.MESSAGE_CONTENT,
+    Intents.FLAGS.GUILD_MEMBERS
   ]
 })
 
@@ -87,21 +143,22 @@ client.on("messageCreate", async (message) =>{
       const problem = globalThis.PROBLEMS[idNumero];
       
       if (problem) {
-        message.reply(LINKMODEL + PROBLEMSET + problem.contestId + "/" + problem.index);
+        const problemEmbed = createProblemEmbed(problem);
+        message.reply({ embeds: [problemEmbed]});
       } else {
         message.reply("Problema não encontrado!");
       }
   }
 })
 
-client.on('ready', (client) => {
+client.on('ready', async (client) => {
   console.log(`${client.user.tag} está online!`)
 
-  loadAPIData();
-  loadUserData();
+  await loadAPIData();
+  await loadUserData();
 
   console.log(globalThis.PROBLEMS.length);
 
 })
 
-client.login(process.env.TOKEN)
+client.login(process.env.TOKEN);
